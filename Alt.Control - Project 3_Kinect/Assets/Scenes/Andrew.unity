@@ -6253,7 +6253,7 @@ GameObject:
   - component: {fileID: 772383989}
   - component: {fileID: 772383988}
   m_Layer: 0
-  m_Name: Track(Clone) (1)
+  m_Name: Wall Colision #1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6684,7 +6684,7 @@ GameObject:
   - component: {fileID: 1045935898}
   - component: {fileID: 1045935897}
   m_Layer: 0
-  m_Name: Track(Clone) (2)
+  m_Name: Wall Colision #2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17577,6 +17577,7 @@ GameObject:
   - component: {fileID: 1678891610}
   - component: {fileID: 1678891611}
   - component: {fileID: 1678891612}
+  - component: {fileID: 1678891613}
   m_Layer: 0
   m_Name: Player Bobsled
   m_TagString: Untagged
@@ -17777,6 +17778,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1678891613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678891602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11c35cdd5fdae424ba035abd8f90584d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentText: {fileID: 150862635}
+  bestText: {fileID: 622929175}
+  startingRate: 5
+  acceleration: 2.5
+  multiplier: 1
 --- !u!1 &1788424721
 GameObject:
   m_ObjectHideFlags: 0
