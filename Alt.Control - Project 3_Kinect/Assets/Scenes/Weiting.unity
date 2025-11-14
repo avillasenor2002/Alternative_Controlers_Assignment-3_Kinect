@@ -453,6 +453,10 @@ PrefabInstance:
       value: 0.304
       objectReference: {fileID: 0}
     - target: {fileID: 7679494102115318031, guid: 3e222119af07226459aa4707deb3dd22, type: 3}
+      propertyPath: speedIncreasePerSecond
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679494102115318031, guid: 3e222119af07226459aa4707deb3dd22, type: 3}
       propertyPath: obstaclePrefabs.Array.size
       value: 1
       objectReference: {fileID: 0}
