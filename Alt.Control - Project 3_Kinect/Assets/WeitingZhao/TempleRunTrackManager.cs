@@ -17,8 +17,14 @@ public class TempleRunTrackManager : MonoBehaviour
     [Tooltip("Length of each track in Z-axis direction")]
     public float trackLength = 10f;
 
-    [Tooltip("Track movement speed (towards player)")]
-    public float trackSpeed = 8f;
+    [Tooltip("Initial track movement speed (towards player)")]
+    public float baseTrackSpeed = 8f;
+
+    [Tooltip("Maximum track movement speed (towards player)")]
+    public float maxTrackSpeed = 20f;
+
+    [Tooltip("Speed increase per second (linear acceleration)")]
+    public float speedIncreasePerSecond = 0.5f;
 
     [Tooltip("Number of initial tracks to spawn")]
     public int initialTrackCount = 5;
@@ -47,6 +53,12 @@ public class TempleRunTrackManager : MonoBehaviour
     // Internal use: current tracks in play (queue for easy dequeue/enqueue from start/end)
     private readonly Queue<GameObject> activeTracks = new Queue<GameObject>();
 
+    // Current track speed (updated over time)
+    private float currentTrackSpeed;
+
+    // Game start time
+    private float gameStartTime;
+
     private void Start()
     {
         if (player == null)
@@ -70,18 +82,25 @@ public class TempleRunTrackManager : MonoBehaviour
             Vector3 pos = new Vector3(0f, 0f, startZ + i * trackLength);
             SpawnNewTrack(pos);
         }
+
+        // Initialize speed and game time
+        currentTrackSpeed = baseTrackSpeed;
+        gameStartTime = Time.time;
     }
 
     private void Update()
     {
         float delta = Time.deltaTime;
 
+        // Update track speed based on game time
+        UpdateTrackSpeed(delta);
+
         // 1. Move all tracks backward towards player (assuming player is near origin)
         foreach (GameObject track in activeTracks)
         {
             if (track != null)
             {
-                track.transform.Translate(0f, 0f, -trackSpeed * delta, Space.World);
+                track.transform.Translate(0f, 0f, -currentTrackSpeed * delta, Space.World);
             }
         }
 
@@ -90,6 +109,57 @@ public class TempleRunTrackManager : MonoBehaviour
 
         // 3. Check if any track is too far behind player, can be recycled
         RecycleBehindTrack();
+    }
+
+    /// <summary>
+    /// Update track speed based on elapsed game time
+    /// </summary>
+    private void UpdateTrackSpeed(float deltaTime)
+    {
+        // Calculate elapsed time since game start
+        float elapsedTime = Time.time - gameStartTime;
+
+        // Calculate new speed: baseSpeed + (speedIncreasePerSecond * elapsedTime)
+        float newSpeed = baseTrackSpeed + (speedIncreasePerSecond * elapsedTime);
+
+        // Clamp speed to maximum
+        currentTrackSpeed = Mathf.Min(newSpeed, maxTrackSpeed);
+    }
+
+    /// <summary>
+    /// Get current track speed
+    /// </summary>
+    public float GetCurrentSpeed()
+    {
+        return currentTrackSpeed;
+    }
+
+    /// <summary>
+    /// Get elapsed game time in seconds
+    /// </summary>
+    public float GetElapsedTime()
+    {
+        return Time.time - gameStartTime;
+    }
+
+    /// <summary>
+    /// Reset speed and game time (useful for restarting the game)
+    /// </summary>
+    public void ResetSpeed()
+    {
+        currentTrackSpeed = baseTrackSpeed;
+        gameStartTime = Time.time;
+    }
+
+    /// <summary>
+    /// Get speed progress (0 = base speed, 1 = max speed)
+    /// </summary>
+    public float GetSpeedProgress()
+    {
+        if (maxTrackSpeed <= baseTrackSpeed) return 0f;
+        float speedRange = maxTrackSpeed - baseTrackSpeed;
+        float currentProgress = currentTrackSpeed - baseTrackSpeed;
+        return Mathf.Clamp01(currentProgress / speedRange);
     }
 
     /// <summary>
