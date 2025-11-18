@@ -17,19 +17,43 @@ public class RunnerLateralMovement : MonoBehaviour
 
     private CharacterController controller;
     private float currentSideSpeed = 0f;
+    private KinectLeanDetector kinectLeanDetector;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        // 查找 KinectLeanDetector 组件（可能在同一个 GameObject 或其他地方）
+        kinectLeanDetector = GetComponent<KinectLeanDetector>();
+        if (kinectLeanDetector == null)
+        {
+            kinectLeanDetector = FindObjectOfType<KinectLeanDetector>();
+        }
     }
 
     void Update()
     {
         float input = 0;
 
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+        // 优先检查 Kinect 倾斜检测
+        bool kinectLeft = false;
+        bool kinectRight = false;
+        
+        if (kinectLeanDetector != null)
+        {
+            if (kinectLeanDetector.currentLeanDirection == KinectLeanDetector.LeanDirection.Left)
+            {
+                kinectLeft = true;  // 向左倾斜 = 按 A 键
+            }
+            else if (kinectLeanDetector.currentLeanDirection == KinectLeanDetector.LeanDirection.Right)
+            {
+                kinectRight = true;  // 向右倾斜 = 按 D 键
+            }
+        }
+
+        // 键盘输入（如果 Kinect 没有输入，则使用键盘）
+        if (kinectLeft || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             input = -1;
-        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+        else if (kinectRight || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
             input = 1;
 
         // Accelerating sideways
