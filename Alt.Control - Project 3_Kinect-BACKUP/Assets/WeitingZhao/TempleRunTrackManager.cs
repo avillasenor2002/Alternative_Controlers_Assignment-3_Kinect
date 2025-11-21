@@ -59,6 +59,9 @@ public class TempleRunTrackManager : MonoBehaviour
     // Game start time
     private float gameStartTime;
 
+    // Track counter to keep track of spawned tracks (for obstacle generation logic)
+    private int totalTracksSpawned = 0;
+
     private void Start()
     {
         if (player == null)
@@ -172,7 +175,9 @@ public class TempleRunTrackManager : MonoBehaviour
         TrackSegment segment = newTrack.GetComponent<TrackSegment>();
         if (segment != null)
         {
-            segment.GenerateContents(obstaclePrefabs, pickupPrefabs, obstacleSpawnChance, pickupSpawnChance);
+            // 前两个track（索引0和1）不生成障碍物，从第三个track（索引2）开始正常生成
+            bool shouldGenerateObstacles = totalTracksSpawned >= 2;
+            segment.GenerateContents(obstaclePrefabs, pickupPrefabs, obstacleSpawnChance, pickupSpawnChance, shouldGenerateObstacles);
         }
         else
         {
@@ -180,6 +185,7 @@ public class TempleRunTrackManager : MonoBehaviour
         }
 
         activeTracks.Enqueue(newTrack);
+        totalTracksSpawned++;
         return newTrack;
     }
 
@@ -254,7 +260,9 @@ public class TempleRunTrackManager : MonoBehaviour
             if (segment != null)
             {
                 segment.ClearContents();
-                segment.GenerateContents(obstaclePrefabs, pickupPrefabs, obstacleSpawnChance, pickupSpawnChance);
+                // 回收的track总是正常生成障碍物（因为它们会被放到前面，此时已经超过了前两个track）
+                bool shouldGenerateObstacles = totalTracksSpawned >= 2;
+                segment.GenerateContents(obstaclePrefabs, pickupPrefabs, obstacleSpawnChance, pickupSpawnChance, shouldGenerateObstacles);
             }
 
             // Re-enqueue to the queue

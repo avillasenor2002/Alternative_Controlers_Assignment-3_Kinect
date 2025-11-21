@@ -21,7 +21,8 @@ public class TrackSegment : MonoBehaviour
         List<GameObject> obstaclePrefabs,
         List<GameObject> pickupPrefabs,
         float obstacleSpawnChance,
-        float pickupSpawnChance)
+        float pickupSpawnChance,
+        bool shouldGenerateObstacles = true)
     {
         ClearContents();
 
@@ -61,7 +62,7 @@ public class TrackSegment : MonoBehaviour
             if (preferredType == null || preferredType == SpawnType.Random)
             {
                 // Random logic: try obstacles first, then pickups
-                if (obstaclePrefabs != null && obstaclePrefabs.Count > 0 && roll < obstacleSpawnChance)
+                if (shouldGenerateObstacles && obstaclePrefabs != null && obstaclePrefabs.Count > 0 && roll < obstacleSpawnChance)
                 {
                     shouldSpawnObstacle = true;
                 }
@@ -72,8 +73,8 @@ public class TrackSegment : MonoBehaviour
             }
             else if (preferredType == SpawnType.Obstacle)
             {
-                // Force obstacle spawn if probability allows
-                if (obstaclePrefabs != null && obstaclePrefabs.Count > 0 && roll < obstacleSpawnChance)
+                // Force obstacle spawn if probability allows (only if obstacles should be generated)
+                if (shouldGenerateObstacles && obstaclePrefabs != null && obstaclePrefabs.Count > 0 && roll < obstacleSpawnChance)
                 {
                     shouldSpawnObstacle = true;
                 }
