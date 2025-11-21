@@ -18869,6 +18869,7 @@ MonoBehaviour:
   cameraShake: {fileID: 966725696}
   screenFade: {fileID: 1678891610}
   restartDelay: 1.2
+  playerhealth: 2
 --- !u!54 &1678891612
 Rigidbody:
   m_ObjectHideFlags: 0
